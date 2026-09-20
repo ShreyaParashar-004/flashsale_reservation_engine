@@ -1,1 +1,33 @@
-
+{
+  "name": "flashsale_reservation_engine",
+  "version": "1.0.0",
+  "description": "## Problem Statement",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs",
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ShreyaParashar-004/flashsale_reservation_engine.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ShreyaParashar-004/flashsale_reservation_engine/issues"
+  },
+  "homepage": "https://github.com/ShreyaParashar-004/flashsale_reservation_engine#readme",
+  "dependencies": {
+    "dotenv": "^18.0.1",
+    "express": "^5.2.1",
+    "ioredis": "^6.0.0",
+    "pg": "^8.23.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.14"
+  }
+}
