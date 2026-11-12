@@ -1,11 +1,11 @@
-CREATE TABLE products (
+CREATE TABLE IF NOT EXISTS products (
     id UUID PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     total_stock INTEGER NOT NULL CHECK (total_stock >= 0),
     created_at TIMESTAMP NOT NULL DEFAULT NOW()
 );
 
-CREATE TABLE reservations (
+CREATE TABLE IF NOT EXISTS reservations (
     id UUID PRIMARY KEY,
     product_id UUID NOT NULL REFERENCES products(id),
     user_id VARCHAR(255) NOT NULL,
@@ -17,7 +17,7 @@ CREATE TABLE reservations (
     UNIQUE(idempotency_key)
 );
 
-CREATE TABLE orders (
+CREATE TABLE IF NOT EXISTS orders (
     id UUID PRIMARY KEY,
     reservation_id UUID NOT NULL UNIQUE REFERENCES reservations(id),
     product_id UUID NOT NULL REFERENCES products(id),

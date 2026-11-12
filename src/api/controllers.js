@@ -1,4 +1,46 @@
 const pool = require("../db/client");
+const redis = require("../redis/client");
+
+const CHECK_TIMEOUT_MS = 2000;
+
+// Reject if a check takes too long.
+function withTimeout(promise, ms) {
+    return Promise.race([
+        promise,
+        new Promise((_, reject) => setTimeout(() => reject(new Error("timeout")), ms)),
+    ]);
+}
+
+async function checkRedis() {
+    try {
+        return (await withTimeout(redis.ping(), CHECK_TIMEOUT_MS)) === "PONG";
+    } catch (error) {
+        console.error("[health] redis check failed:", error.message);
+        return false;
+    }
+}
+
+async function checkPostgres() {
+    try {
+        await withTimeout(pool.query("SELECT 1"), CHECK_TIMEOUT_MS);
+        return true;
+    } catch (error) {
+        console.error("[health] postgres check failed:", error.message);
+        return false;
+    }
+}
+
+async function healthCheck(req, res) {
+    const [redisUp, postgresUp] = await Promise.all([checkRedis(), checkPostgres()]);
+    const healthy = redisUp && postgresUp;
+
+    res.status(healthy ? 200 : 503).json({
+        status: healthy ? "ok" : "degraded",
+        redis: redisUp ? "up" : "down",
+        postgres: postgresUp ? "up" : "down",
+        timestamp: new Date().toISOString(),
+    });
+}
 
 async function getProducts(req, res) {
     try {
@@ -32,6 +74,9 @@ async function getProductById(req, res) {
 }
 
 module.exports = {
+    healthCheck,
+    checkRedis,
+    checkPostgres,
     getProducts,
     getProductById,
 };

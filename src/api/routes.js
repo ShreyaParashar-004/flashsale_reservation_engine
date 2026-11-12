@@ -1,11 +1,9 @@
 const express = require("express");
-const { getProducts, getProductById } = require("./controllers");
+const { healthCheck, getProducts, getProductById } = require("./controllers");
 
 const router = express.Router();
 
-router.get("/health", (req, res) => {
-    res.json({ status: "ok" });
-});
+router.get("/health", healthCheck);
 
 router.get("/products", getProducts);
 router.get("/products/:productId", getProductById);
